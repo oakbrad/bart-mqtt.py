@@ -5,17 +5,20 @@ Change MQTT information and list stations you want to monitor.
 
 # Sample Output
 ```
-BART/LAKE/North/Daly City ["9", "18", "29"]
-BART/LAKE/North/Richmond ["3", "23", "43"]
-BART/LAKE/South/Dublin-Pleasanton ["15", "35", "55"]
-BART/LAKE/South/Fremont ["3", "24", "45"]
-BART/LAKE/South/Warm Springs ["Leaving", "20", "40"]
-BART/16TH/North/Dublin-Pleasanton ["15", "35"]
-BART/16TH/North/Fremont ["6", "27", "44"]
-BART/16TH/North/Pittsburg-Bay Point ["9", "28", "48"]
-BART/16TH/North/Richmond ["Leaving", "20", "40"]
-BART/16TH/South/Daly City ["3", "6", "10"]
-BART/16TH/South/SFO-Millbrae ["13", "33", "53"]
+BART/Service/Elevator "There is 1 elevator out of service at this time: WARM: Concourse (East) - Walkway"
+BART/Service/Advisory "No delays reported."
+BART/12TH/Advisory  "No delays reported."
+BART/12TH/North/Pittsburg-Bay Point ["1", "22", "42"]
+BART/12TH/North/Richmond ["2", "14", "22"]
+BART/12TH/South/Daly City ["2", "21", "41"]
+BART/12TH/South/SFO-Millbrae ["11", "31", "51"]
+BART/12TH/South/Warm Springs ["14", "34", "54"]
+BART/LAKE/Advisory  "No delays reported."
+BART/LAKE/North/Daly City ["5", "15", "25"]
+BART/LAKE/North/Richmond ["19", "39", "59"]
+BART/LAKE/South/Dublin-Pleasanton ["11", "31", "51"]
+BART/LAKE/South/Fremont ["19", "39", "59"]
+BART/LAKE/South/Warm Springs ["16", "36", "56"]
 ```
 
 # Dependencies
