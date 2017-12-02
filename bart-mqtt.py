@@ -77,7 +77,7 @@ bartService = response['root']['bsa']['sms_text']
 payload = json.dumps(bartService)
 topic = "BART/Service/Advisory"
 publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
-print topic + " " + payload
+#print topic + " " + payload
 
 for station in myStations:
     response = xmltodict.parse(etd(station,"n"))
