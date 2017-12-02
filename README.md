@@ -3,6 +3,11 @@ Get real time departures for specified BART train stations and publish to MQTT. 
 
 Change MQTT information and list stations you want to monitor.
 
+```
+myStations = ["12th","lake","abbrev"]
+```
+https://api.bart.gov/docs/overview/abbrev.aspx
+
 # Sample Output
 ```
 BART/Service/Elevator "There is 1 elevator out of service at this time: WARM: Concourse (East) - Walkway"
