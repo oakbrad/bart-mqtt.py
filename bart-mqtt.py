@@ -33,7 +33,7 @@ MQTT_AUTH = {
 myStations = ["12th","lake","16th"]
 
 
-def etd(orig, dir, key=BART_API_KEY):
+def etd(orig, dir="n", key=BART_API_KEY):
     url = "http://api.bart.gov/api/etd.aspx?" +  \
             urllib.urlencode({'cmd':'etd',
                               'orig':orig,
@@ -42,6 +42,42 @@ def etd(orig, dir, key=BART_API_KEY):
                                                                   
     r = requests.get(url)
     return r.content
+
+def bsa(orig="all", key=BART_API_KEY):
+    url = "http://api.bart.gov/api/bsa.aspx?" +  \
+            urllib.urlencode({'cmd':'bsa',
+                              'orig':orig,
+                              'key':key})
+    # print url
+                                                                  
+    r = requests.get(url)
+    return r.content
+
+def elev(key=BART_API_KEY):
+    url = "http://api.bart.gov/api/bsa.aspx?" +  \
+            urllib.urlencode({'cmd':'elev',
+                              'key':key})
+    # print url
+                                                                  
+    r = requests.get(url)
+    return r.content
+
+#
+# Get service information
+#
+response = xmltodict.parse(elev())
+bartElevator = response['root']['bsa']['description']
+topic = "BART/Service/Elevator"
+payload = json.dumps(bartElevator)
+publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
+#print topic + " " + payload
+
+response = xmltodict.parse(bsa())
+bartService = response['root']['bsa']['sms_text']
+payload = json.dumps(bartService)
+topic = "BART/Service/Advisory"
+publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
+print topic + " " + payload
 
 for station in myStations:
     response = xmltodict.parse(etd(station,"n"))
