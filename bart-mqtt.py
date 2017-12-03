@@ -79,23 +79,45 @@ topic = "BART/Service/Advisory"
 publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
 #print topic + " " + payload
 
+northDepartures = []
+southDepartures = []
+
 for station in myStations:
     response = xmltodict.parse(etd(station,"n"))
     northbound = response['root']['station']['etd']
     thisStation = response['root']['station']['abbr']
     response = xmltodict.parse(etd(station,"s"))
     southbound = response['root']['station']['etd']
+    response = xmltodict.parse(bsa(station))
+    thisAdvisory = response['root']['bsa']['sms_text']
+
+    topic = "BART/" + thisStation + "/Advisory "
+    payload = json.dumps(thisAdvisory)
+#    print "BART/" + thisStation + "/Advisory " + payload
+    publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
 
     for train in northbound:
-       thisTrain = train['destination'].replace("/","-")
-
+       thisTrain = train['destination'].replace("/","-") 
+    
        thisDeparture = []
        for departure in train['estimate']:
            thisDeparture.append(departure['minutes']) 
-           payload = json.dumps(thisDeparture)
-#       print "BART/" + thisStation + "/North/" + thisTrain + " " + payload
+           payload = json.dumps(thisDeparture) 
+           
+           time = departure['minutes']
+	   if "Leaving" not in time: northDepartures.append(time)
+
+#           print "BART/" + thisStation + "/North/" + thisTrain + " " + payload
        topic = "BART/" + thisStation + "/North/" + thisTrain
        publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
+
+    northDepartures = list(set(northDepartures))
+    northDepartures = [int(x) for x in northDepartures]
+    northDepartures.sort()
+    allpayload = json.dumps(northDepartures)
+    alltopic = "BART/" + thisStation + "/North/All"
+    publish.single(alltopic,payload=allpayload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
+    northDepartures = []
 
     for train in southbound:
        thisTrain = train['destination'].replace("/","-")
@@ -103,11 +125,25 @@ for station in myStations:
        thisDeparture = []
        for departure in train['estimate']:
            thisDeparture.append(departure['minutes']) 
-           payload = json.dumps(thisDeparture) 
+           payload = json.dumps(thisDeparture)
+
+           time = departure['minutes']
+           if "Leaving" not in time: southDepartures.append(time)
+ 
 #       print "BART/" + thisStation + "/South/" + thisTrain + " " + payload
        topic = "BART/" + thisStation + "/South/" + thisTrain
        publish.single(topic,payload=payload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
 
-
-
+    # Format list
+    # Remove duplicates
+    southDepartures = list(set(southDepartures))
+    # Make all integers
+    southDepartures = [int(x) for x in southDepartures]
+    # Sort high to low
+    southDepartures.sort()
+    # Convert to JSON
+    allpayload = json.dumps(southDepartures)
+    alltopic = "BART/" + thisStation + "/South/All"
+    publish.single(alltopic,payload=allpayload,hostname=mqtt_host,client_id="bartbot",auth=MQTT_AUTH,port=1883,protocol=mqtt.MQTTv311)
+    southDepartures = []
 
